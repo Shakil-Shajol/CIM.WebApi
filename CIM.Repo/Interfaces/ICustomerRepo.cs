@@ -9,7 +9,7 @@ namespace CIM.Repo.Interfaces
     {
         void SaveCustomerData(Customer customer);
         Customer GetCustomerById(int id);
-        List<Customer> GetCustomers();
+        IEnumerable<Customer> GetCustomers();
         void DeleteCustomer(int id);
     }
 }

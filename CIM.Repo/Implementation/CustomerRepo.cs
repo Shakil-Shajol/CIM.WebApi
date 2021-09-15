@@ -27,9 +27,9 @@ namespace CIM.Repo.Implementation
             throw new NotImplementedException();
         }
 
-        public List<Customer> GetCustomers()
+        public IEnumerable<Customer> GetCustomers()
         {
-            throw new NotImplementedException();
+            return _cusRepo.FindAll();
         }
 
         public void SaveCustomerData(Customer customer)
