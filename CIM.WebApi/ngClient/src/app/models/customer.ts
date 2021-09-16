@@ -9,8 +9,8 @@ export class Customer {
   FatherName: string;
   MotherName: string;
   MaritalStatus: Number;
-  CustomerPhoto: Blob;
+  CustomerPhoto: string;
   Country: Country;
   CustomerAddresses: CustomerAddress[];
-
+  CustomerPhotoBlob: File;
 }

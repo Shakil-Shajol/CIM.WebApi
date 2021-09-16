@@ -8,7 +8,7 @@
       <div class="col-4">
           <fieldset class="form-group border p-3">
             <legend class="w-auto">Customer List</legend>
-            <div class="card text-center mb-1 upper-hover" *ngFor="let c of customers" (click)="getForEdit(c.ID)">
+            <div class="card text-center mb-1 upper-hover" *ngFor="let c of customers" (click)="loadById(c.ID)">
               <div class="card-body">
                 <h5 class="card-title custom-link-pointer">{{c.CustomerName}}</h5>
               </div>
@@ -23,122 +23,137 @@
                 <legend class="w-auto">Actions</legend>
                 <div class="row">
                   <div class="col-12">
-                    <button class="btn btn-outline-primary btn-flat">Edit</button>
+                    <button class="btn btn-primary btn-flat" [disabled]="applicationState=='edit' || applicationState=='new'" (click)="editModeOpen()">Edit</button>
                     &nbsp;
-                    <button class="btn btn-outline-success btn-flat">Save</button>
+                    <button class="btn btn-success btn-flat" (click)="onSave()" [disabled]="applicationState=='view'">Save</button>
                     &nbsp;
-                    <button class="btn btn-outline-danger btn-flat">Delete</button>
+                    <button class="btn btn-danger btn-flat" (click)="deleteCustomer()" [disabled]="applicationState=='edit' || applicationState=='new'">Delete</button>
                     &nbsp;
-                    <button class="btn btn-outline-secondary btn-flat">Cancel</button>
+                    <button class="btn btn-secondary btn-flat" (click)="resetForm()">Cancel</button>
                   </div>
                 </div>
               </fieldset>
             </div>
           </div>
-          <div class="row mb-1">
-            <div class="col-12">
-              <fieldset class="form-group border p-3">
-                <legend class="w-auto">Basic Informations</legend>
-                <div class="row">
-                  <div class="col-8">
-                    <div class="form-group mb-1">
-                      <div class="row">
-                        <label class="control-label col-4">Name</label>
-                        <div class="col-8">
-                          <input formControlName="CustomerName" class="form-control form-control-sm" />
+          <form [formGroup]="mainForm">
+            <div class="row mb-1">
+              <div class="col-12">
+                <fieldset class="form-group border p-3">
+                  <legend class="w-auto">Basic Informations</legend>
+                  <div class="row">
+                    <div class="col-8">
+                      <div class="form-group mb-1">
+                        <div class="row">
+                          <label class="control-label col-4">Name</label>
+                          <div class="col-8">
+                            <input formControlName="CustomerName" class="form-control form-control-sm"/>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group mb-1">
+                        <div class="row">
+                          <label class="control-label col-4">Father Name</label>
+                          <div class="col-8">
+                            <input formControlName="FatherName" class="form-control form-control-sm" />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group mb-1">
+                        <div class="row">
+                          <label class="control-label col-4">Mother Name</label>
+                          <div class="col-8">
+                            <input formControlName="MotherName" class="form-control form-control-sm"/>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group mb-1">
+                        <div class="row">
+                          <label class="control-label col-4">Marital Status</label>
+                          <div class="col-8">
+                            <input id="single" type="radio" name="MaritalStatus" formControlName="MaritalStatus" class="form-check-input" value="1"/>
+                            <label for="single">SINGLE</label> &nbsp;
+                            <input id="married" type="radio" name="MaritalStatus" formControlName="MaritalStatus" class="form-check-input" value="2"/>
+                            <label for="married">MARRIED</label> &nbsp;
+                            <input id="other" type="radio" name="MaritalStatus" formControlName="MaritalStatus" class="form-check-input" value="3"  />
+                            <label for="other">OTHER</label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group mb-1">
+                        <div class="row">
+                          <label class="control-label col-4">Country</label>
+                          <div class="col-8">
+                            <select class="form-control form-control-sm" formControlName="CountryID" >
+                              <option disabled selected value="">Select Country</option>
+                              <option *ngFor="let a of countries" value="{{a.ID}}">{{a.CountryName}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group mb-1">
+                        <div class="row">
+                          <label class="control-label col-4">Photo</label>
+                          <div class="col-8">
+                            <input type="file" id="imageInput" accept=".jpeg,.jpg,.png" class="form-control form-control-sm"
+                                   #attachedImageInput (change)="onImageSelected($event)">
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <div class="form-group mb-1">
-                      <div class="row">
-                        <label class="control-label col-4">Father Name</label>
-                        <div class="col-8">
-                          <input formControlName="FatherName" class="form-control form-control-sm" />
+                    <div class="col-4">
+                      <div class="fileUpload" *ngIf="!customerImageSelected">
+                        <div class="centerd text-center" (click)="onImageUploadClick($event)" >
+                          <p class="text-center">Upload image</p>
                         </div>
                       </div>
-                    </div>
-                    <div class="form-group mb-1">
-                      <div class="row">
-                        <label class="control-label col-4">Mother Name</label>
-                        <div class="col-8">
-                          <input formControlName="MotherName" class="form-control form-control-sm" />
+                      <div class="customer-image" *ngIf="customerImageSelected">
+                        <img [src]="customerPhotoUrl" alt="Customer Image" class="myImage" />
+                        <div class="middle">
+                          <button class="btn btn-dark" (click)="onImageUploadClick($event)" *ngIf="applicationState=='edit' || applicationState=='new'">
+                            Change Image
+                          </button>
                         </div>
                       </div>
-                    </div>
-                    <div class="form-group mb-1">
-                      <div class="row">
-                        <label class="control-label col-4">Marital Status</label>
-                        <div class="col-8">
-                          <input id="single" type="radio" name="MaritalStats" formControlName="MaritalStatus" class="form-check-input" value="1" />
-                          <label for="single">SINGLE</label> &nbsp;
-                          <input id="married" type="radio" name="MaritalStats" formControlName="MaritalStatus" class="form-check-input" value="2" />
-                          <label for="married">MARRIED</label> &nbsp;
-                          <input id="other" type="radio" name="MaritalStats" formControlName="MaritalStatus" class="form-check-input" value="3" />
-                          <label for="other">OTHER</label>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-group mb-1">
-                      <div class="row">
-                        <label class="control-label col-4">Country</label>
-                        <div class="col-8">
-                          <select class="form-control form-control-sm" formControlName="CountryId">
-                            <option disabled selected value="">Select Country</option>
-                            <option *ngFor="let a of countries" value="{{a.ID}}">{{a.CountryName}}</option>
-                          </select>
-                        </div>
-                      </div>
+                      
                     </div>
                   </div>
-                  <div class="col-4">
-                    <div class="fileUpload" *ngIf="!customerImageSelected">
-                      <div class="centerd text-center" (click)="onImageUploadClick($event)">
-                        <p class="text-center">Upload image</p>
-                      </div>
-                    </div>
-                    <div class="customer-image" *ngIf="customerImageSelected">
-                      <img [src]="customerPhotoUrl" alt="Customer Image" class="myImage" />
-                      <div class="middle">
-                        <button class="btn btn-outline-dark" (click)="onImageUploadClick($event)">
-                          Change Image
-                        </button>
-                      </div>
-                    </div>
-                    <input type="file" id="imageInput" accept=".jpeg,.jpg,.png" class="invisible"
-                           #attachedImageInput (change)="onImageSelected($event)">
-                  </div>
-                </div>
-              </fieldset>
+                </fieldset>
+              </div>
             </div>
-          </div>
-          <div class="row mb-1">
-            <div class="col-12">
-              <fieldset class="form-group border p-3">
-                <legend class="w-auto">Other Informations</legend>
-                <div class="row">
-                  <div class="col-12 mb-1">
-                    <button class="btn btn-outline-primary btn-flat">Add</button>
+            <div class="row mb-1">
+              <div class="col-12">
+                <fieldset class="form-group border p-3">
+                  <legend class="w-auto">Other Informations</legend>
+                  <div class="row">
+                    <div class="col-12 mb-1">
+                      <button class="btn btn-primary btn-flat" (click)="addCustomerAddresses()">Add</button>
+                    </div>
+                    <div class="col-12">
+                      <table class="table table-bordered table-responsive">
+                        <thead>
+                          <tr>
+                            <th>Address</th>
+                            <th style="width:200px;"></th>
+                          </tr>
+                        </thead>
+                        <tbody formArrayName="CustomerAddresses">
+                          <tr *ngFor="let add of getCustomerAddresses().controls;let i=index">
+                            <td [formGroupName]="i">
+                              <input type="text" formControlName="Address" class="form-control form-control-sm"/>
+                            </td>
+                            <td>
+                              <button class="btn btn-primary btn-flat">Edit</button> &nbsp;
+                              <button class="btn btn-danger btn-flat" (click)="removeCustomerAddresses(i)">Delete</button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                  <div class="col-12">
-                    <table class="table table-bordered table-responsive">
-                      <thead>
-                        <tr>
-                          <th>Address</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </fieldset>
+                </fieldset>
+              </div>
             </div>
-          </div>
+          </form>
         </fieldset>
       </div>
     </div>

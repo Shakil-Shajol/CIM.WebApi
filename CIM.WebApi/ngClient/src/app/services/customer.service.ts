@@ -16,4 +16,18 @@ export class CustomerService {
     let url = 'api/Customer/GetCustomerList';
     return this.apiService.get<Customer[]>(url);
   }
+
+  saveCustomer(customer: FormData): Observable<Customer> {
+    let url = 'api/Customer/SaveCustomer';
+    return this.apiService.postFile<Customer>(url, customer);
+  }
+
+  getAllCustomerById(id): Observable<Customer> {
+    let url = 'api/Customer/GetCustomerById?id='+id;
+    return this.apiService.get<Customer>(url);
+  }
+  deleteCustomer(customer: FormData): Observable<Customer> {
+    let url = 'api/Customer/DeleteCustomer';
+    return this.apiService.postFile<Customer>(url, customer);
+  }
 }

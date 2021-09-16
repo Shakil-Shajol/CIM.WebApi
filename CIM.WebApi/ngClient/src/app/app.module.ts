@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { CustomerComponent } from './customer/customer.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { CountryComponent } from './country/country.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,9 @@ import { CountryComponent } from './country/country.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -43,6 +43,18 @@ namespace CIM.WebApi
             services.AddScoped(typeof(IGenericRepo<>),typeof(GenericRepo<>));
             services.AddScoped<ICustomerRepo,CustomerRepo>();
             services.AddScoped<ICountryRepo,CountryRepo>();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                builder =>
+                {
+                    builder.AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+
+                });
+
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,7 +64,7 @@ namespace CIM.WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseCors("CorsPolicy");
             app.UseRouting();
             app.UseStaticFiles();
             app.UseAuthorization();

@@ -11,6 +11,7 @@ export class WebApiService {
 
   constructor(private httpClient: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
     this.baseUrl = "";
+    //this.baseUrl = "http://localhost:52439/";
   }
 
   get<T>(url: string, parmams: any = null) {
@@ -21,9 +22,9 @@ export class WebApiService {
     }
   }
 
-  postFile(url: string, formData: FormData) {
+  postFile<T>(url: string, formData: FormData) {
     if (formData) {
-      return this.httpClient.post(this.baseUrl + url, formData).pipe
+      return this.httpClient.post<T>(this.baseUrl + url, formData).pipe
         (
           catchError(this.handleError)
         );
@@ -45,6 +46,8 @@ export class WebApiService {
       );
     }
   }
+
+
   private handleError(error: HttpErrorResponse) {
     console.log('error:', error);
     console.log('error.error:', error.error);
