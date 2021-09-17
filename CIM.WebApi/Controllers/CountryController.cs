@@ -36,5 +36,23 @@ namespace CIM.WebApi.Controllers
                 return BadRequest(ex);
             }
         }
+
+
+        [HttpPost]
+        [Route("/api/Country/SaveCountry")]
+        public IActionResult SaveCountry([FromBody] Country country)
+        {
+            try
+            {
+                _countryRepo.SaveCountry(country);
+                country.Customers = null;
+                return Ok(country);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
+        }
     }
 }

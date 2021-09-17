@@ -8,5 +8,6 @@ namespace CIM.Repo.Interfaces
     public interface ICountryRepo
     {
         IEnumerable<Country> GetCountries();
+        void SaveCountry(Country country);
     }
 }

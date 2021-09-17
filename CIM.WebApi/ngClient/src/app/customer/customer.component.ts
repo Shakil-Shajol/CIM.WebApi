@@ -65,13 +65,21 @@ export class CustomerComponent implements OnInit {
     if (event.target.files && event.target.files.length > 0) {
       let file: File = event.target.files[0];
       this.selectedFile = event.target.files[0];
-      reader.readAsDataURL(file);
-      reader.onload = (e: any) => {
-        this.selectedFileString = (reader.result as string).split(',')[1];
-        this.customerPhotoUrl = e.target.result;
-        this.selectedFileName = file.name;
-      };
-      this.customerImageSelected = true;
+      let FileIsValid: boolean = (this.AllowedExt.indexOf(file.name.split('.').pop()) !=-1);
+      console.log(file.name, file.name.split('.').pop());
+      if (FileIsValid) {
+        reader.readAsDataURL(file);
+        reader.onload = (e: any) => {
+          this.selectedFileString = (reader.result as string).split(',')[1];
+          this.customerPhotoUrl = e.target.result;
+          this.selectedFileName = file.name;
+        };
+        this.customerImageSelected = true;
+      }
+      else {
+        alert('Only .jpeg, .jpg, .png Files are Allowed!');
+        this.selectedFile = null;
+      }
     }
   }
 
@@ -84,7 +92,7 @@ export class CustomerComponent implements OnInit {
   buildForm() {
     this.mainForm = this.fb.group({
       ID: new FormControl('0'),
-      CountryID: new FormControl('', Validators.required),
+      CountryID: new FormControl('0', Validators.required),
       CustomerName: new FormControl('', [Validators.required, Validators.maxLength(50)]),
       FatherName: new FormControl('', Validators.maxLength(50)),
       MotherName: new FormControl('', Validators.maxLength(50)),
@@ -109,14 +117,19 @@ export class CustomerComponent implements OnInit {
   }
   removeCustomerAddresses(i: number) {
     this.getCustomerAddresses().removeAt(i);
+    if (i==0) {
+      this.addCustomerAddresses();
+    }
   }
   getCustomerAddresses(): FormArray {
     return this.mainForm.get("CustomerAddresses") as FormArray
   }
   onSave() {
     this.formSubmited = true;
-    if (this.mainForm.valid) {
+    if (this.mainForm.valid && this.mainForm.get('CountryID').value != 0) {
       this.customerData = this.mainForm.getRawValue();
+      if ((this.customerData.ID == null || this.customerData.ID == 0) && !this.customerImageSelected)
+      { return; }
       console.log(this.customerData);
       let fd = new FormData();
       let id = this.customerData.ID.toString();
@@ -202,20 +215,28 @@ export class CustomerComponent implements OnInit {
 
   deleteCustomer() {
     this.customerData = this.mainForm.getRawValue();
-    if (this.customerData.ID > 0) {
-      let fd = new FormData();
-      fd.append("ID", this.customerData.ID.toString());
-      this.customerService.deleteCustomer(fd).subscribe(
-        (data) => {
-          console.log(data);
-          this.resetForm();
-      },
-        (err) => {
-          console.log(err);
-        });
+    if (confirm('Are You Sure About Delete This Record?')) {
+      if (this.customerData.ID > 0) {
+        let fd = new FormData();
+        fd.append("ID", this.customerData.ID.toString());
+        this.customerService.deleteCustomer(fd).subscribe(
+          (data) => {
+            console.log(data);
+            this.resetForm();
+          },
+          (err) => {
+            console.log(err);
+          });
+      }
+      else {
+        console.log('Not found!');
+      }
     }
-    else {
-      console.log('Not found!');
-    }
+    
   }
+  enableEditingAddress(i) {
+    this.getCustomerAddresses().controls[i].enable;
+  }
+
+  AllowedExt = ["png", "jpeg", "jpg"];
 }

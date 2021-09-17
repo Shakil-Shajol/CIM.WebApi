@@ -7,6 +7,7 @@ import { WebApiService } from './web-api.service';
   providedIn: 'root'
 })
 export class CountryService {
+  
 
   constructor(private apiService: WebApiService) { }
 
@@ -14,5 +15,10 @@ export class CountryService {
   getAllCountry(): Observable<Country[]> {
     let url = 'api/Country/GetCountries';
     return this.apiService.get<Country[]>(url);
+  }
+
+  saveCountry(countryData: Country) {
+    let url = 'api/Country/SaveCountry';
+    return this.apiService.post<Country[]>(url, countryData);
   }
 }

@@ -1,0 +1,16 @@
+.btn-flat {
+  border-radius: 0px !important;
+}
+fieldset {
+  border: solid 1px #DDD !important;
+  padding: 0 10px 10px 10px;
+}
+
+
+legend {
+  font-size: inherit;
+  line-height: 30px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #555;
+}

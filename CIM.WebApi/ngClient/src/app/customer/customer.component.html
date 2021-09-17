@@ -23,11 +23,11 @@
                 <legend class="w-auto">Actions</legend>
                 <div class="row">
                   <div class="col-12">
-                    <button class="btn btn-primary btn-flat" [disabled]="applicationState=='edit' || applicationState=='new'" (click)="editModeOpen()">Edit</button>
+                    <button class="btn btn-primary btn-flat" *ngIf="applicationState=='view'" (click)="editModeOpen()">Edit</button>
                     &nbsp;
-                    <button class="btn btn-success btn-flat" (click)="onSave()" [disabled]="applicationState=='view'">Save</button>
+                    <button class="btn btn-success btn-flat" (click)="onSave()" *ngIf="applicationState=='edit' || applicationState=='new'">Save</button>
                     &nbsp;
-                    <button class="btn btn-danger btn-flat" (click)="deleteCustomer()" [disabled]="applicationState=='edit' || applicationState=='new'">Delete</button>
+                    <button class="btn btn-danger btn-flat" (click)="deleteCustomer()" *ngIf="applicationState=='view'">Delete</button>
                     &nbsp;
                     <button class="btn btn-secondary btn-flat" (click)="resetForm()">Cancel</button>
                   </div>
@@ -46,7 +46,9 @@
                         <div class="row">
                           <label class="control-label col-4">Name</label>
                           <div class="col-8">
-                            <input formControlName="CustomerName" class="form-control form-control-sm"/>
+                            <input formControlName="CustomerName" class="form-control form-control-sm" />
+                            <span class="text-danger" *ngIf="mainForm.get('CustomerName').errors?.required && formSubmited">Please Provide Customer Name.</span>
+                            <span class="text-danger" *ngIf="mainForm.get('CustomerName').errors?.maxlength">Only 50 Charecters Are Allowed.</span>
                           </div>
                         </div>
                       </div>
@@ -55,6 +57,7 @@
                           <label class="control-label col-4">Father Name</label>
                           <div class="col-8">
                             <input formControlName="FatherName" class="form-control form-control-sm" />
+                            <span class="text-danger" *ngIf="mainForm.get('FatherName').errors?.maxlength">Only 50 Charecters Are Allowed.</span>
                           </div>
                         </div>
                       </div>
@@ -62,7 +65,8 @@
                         <div class="row">
                           <label class="control-label col-4">Mother Name</label>
                           <div class="col-8">
-                            <input formControlName="MotherName" class="form-control form-control-sm"/>
+                            <input formControlName="MotherName" class="form-control form-control-sm" />
+                            <span class="text-danger" *ngIf="mainForm.get('MotherName').errors?.maxlength">Only 50 Charecters Are Allowed.</span>
                           </div>
                         </div>
                       </div>
@@ -83,22 +87,23 @@
                         <div class="row">
                           <label class="control-label col-4">Country</label>
                           <div class="col-8">
-                            <select class="form-control form-control-sm" formControlName="CountryID" >
-                              <option disabled selected value="">Select Country</option>
+                            <select class="form-control form-control-sm" formControlName="CountryID">
+                              <option disabled value="0">Select Country</option>
                               <option *ngFor="let a of countries" value="{{a.ID}}">{{a.CountryName}}</option>
                             </select>
+                            <span class="text-danger" *ngIf="(mainForm.get('CountryID').errors?.required ||mainForm.get('CountryID').value== 0)&& formSubmited">Please Select Country.</span>
                           </div>
                         </div>
                       </div>
-                      <div class="form-group mb-1">
+                      <!--<div class="form-group mb-1">
                         <div class="row">
                           <label class="control-label col-4">Photo</label>
                           <div class="col-8">
-                            <input type="file" id="imageInput" accept=".jpeg,.jpg,.png" class="form-control form-control-sm"
-                                   #attachedImageInput (change)="onImageSelected($event)">
+                            
+                            
                           </div>
                         </div>
-                      </div>
+                      </div>-->
                     </div>
                     <div class="col-4">
                       <div class="fileUpload" *ngIf="!customerImageSelected">
@@ -114,7 +119,7 @@
                           </button>
                         </div>
                       </div>
-                      
+                      <span class="text-danger" *ngIf="(!customerImageSelected) && formSubmited">Please Upload Image.</span>
                     </div>
                   </div>
                 </fieldset>
@@ -126,7 +131,7 @@
                   <legend class="w-auto">Other Informations</legend>
                   <div class="row">
                     <div class="col-12 mb-1">
-                      <button class="btn btn-primary btn-flat" (click)="addCustomerAddresses()">Add</button>
+                      <button class="btn btn-primary btn-flat" *ngIf="applicationState=='edit' || applicationState=='new'" (click)="addCustomerAddresses()">Add</button>
                     </div>
                     <div class="col-12">
                       <table class="table table-bordered table-responsive">
@@ -140,10 +145,12 @@
                           <tr *ngFor="let add of getCustomerAddresses().controls;let i=index">
                             <td [formGroupName]="i">
                               <input type="text" formControlName="Address" class="form-control form-control-sm"/>
+                              <span class="text-danger" *ngIf="add.get('Address').errors?.required && formSubmited">Please Provide Address</span>
+                              <span class="text-danger" *ngIf="add.get('Address').errors?.maxlength">Address Can contain only 500 charecters</span>
                             </td>
                             <td>
-                              <button class="btn btn-primary btn-flat">Edit</button> &nbsp;
-                              <button class="btn btn-danger btn-flat" (click)="removeCustomerAddresses(i)">Delete</button>
+                              <button class="btn btn-primary btn-flat" *ngIf="applicationState=='edit' || applicationState=='new'" (click)="enableEditingAddress(i)">Edit</button> &nbsp;
+                              <button class="btn btn-danger btn-flat" *ngIf="applicationState=='edit' || applicationState=='new'" (click)="removeCustomerAddresses(i)">Delete</button>
                             </td>
                           </tr>
                         </tbody>
@@ -159,4 +166,7 @@
     </div>
   </div>
 </div>
+
+<input type="file" id="imageInput" accept=".jpeg,.jpg,.png" class="invisible"
+       #attachedImageInput (change)="onImageSelected($event)">
 

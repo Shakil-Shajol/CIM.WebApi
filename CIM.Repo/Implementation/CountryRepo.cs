@@ -27,5 +27,19 @@ namespace CIM.Repo.Implementation
                 throw ex;
             }
         }
+
+        public void SaveCountry(Country country)
+        {
+            try
+            {
+                _cntryRepo.Create(country);
+                _cntryRepo.Commit();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
     }
 }
