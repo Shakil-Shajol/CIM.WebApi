@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Country } from '../models/country';
 import { CountryService } from '../services/country.service';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'app-country',
@@ -13,7 +14,7 @@ export class CountryComponent implements OnInit {
   public CountryForm: FormGroup;
   public countryData: Country;
   public formSubmited: boolean = false;
-  constructor(private countryService: CountryService, private fb: FormBuilder) { }
+  constructor(private countryService: CountryService, private fb: FormBuilder, private notify: NotificationService) { }
 
   ngOnInit(): void {
     this.buildForm();
@@ -44,10 +45,12 @@ export class CountryComponent implements OnInit {
       console.log(this.countryData);
       this.countryService.saveCountry(this.countryData).subscribe(
         (data) => {
+          this.notify.showSuccess('Information Saved Succesfully', 'Information');
           console.log(data);
           this.resetForm();
         },
         (err) => {
+          this.notify.showError('Error Occered!', 'Oops');
           console.log(err);
         }
       )

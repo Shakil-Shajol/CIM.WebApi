@@ -44,7 +44,7 @@
                     <div class="col-8">
                       <div class="form-group mb-1">
                         <div class="row">
-                          <label class="control-label col-4">Name</label>
+                          <label class="control-label col-4">Name <span class="text-danger"> *</span></label>
                           <div class="col-8">
                             <input formControlName="CustomerName" class="form-control form-control-sm" />
                             <span class="text-danger" *ngIf="mainForm.get('CustomerName').errors?.required && formSubmited">Please Provide Customer Name.</span>
@@ -74,18 +74,26 @@
                         <div class="row">
                           <label class="control-label col-4">Marital Status</label>
                           <div class="col-8">
-                            <input id="single" type="radio" name="MaritalStatus" formControlName="MaritalStatus" class="form-check-input" value="1"/>
-                            <label for="single">SINGLE</label> &nbsp;
-                            <input id="married" type="radio" name="MaritalStatus" formControlName="MaritalStatus" class="form-check-input" value="2"/>
-                            <label for="married">MARRIED</label> &nbsp;
-                            <input id="other" type="radio" name="MaritalStatus" formControlName="MaritalStatus" class="form-check-input" value="3"  />
-                            <label for="other">OTHER</label>
+                            <div class="row">
+                              <div class="col-4">
+                                <input id="single" type="radio" name="MaritalStatus" formControlName="MaritalStatus"  value="1" />
+                                <label for="single">SINGLE</label>
+                              </div>
+                              <div class="col-4">
+                                <input id="married" type="radio" name="MaritalStatus" formControlName="MaritalStatus"  value="2" />
+                                <label for="married">MARRIED</label>
+                              </div>
+                              <div class="col-4">
+                                <input id="other" type="radio" name="MaritalStatus" formControlName="MaritalStatus"  value="3" />
+                                <label for="other">OTHER</label>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
                       <div class="form-group mb-1">
                         <div class="row">
-                          <label class="control-label col-4">Country</label>
+                          <label class="control-label col-4">Country <span class="text-danger"> *</span></label>
                           <div class="col-8">
                             <select class="form-control form-control-sm" formControlName="CountryID">
                               <option disabled value="0">Select Country</option>
@@ -134,7 +142,7 @@
                       <button class="btn btn-primary btn-flat" *ngIf="applicationState=='edit' || applicationState=='new'" (click)="addCustomerAddresses()">Add</button>
                     </div>
                     <div class="col-12">
-                      <table class="table table-bordered table-responsive">
+                      <table class="table table-bordered table-striped">
                         <thead>
                           <tr>
                             <th>Address</th>

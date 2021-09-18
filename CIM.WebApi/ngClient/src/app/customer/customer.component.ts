@@ -7,6 +7,7 @@ import { CountryService } from '../services/country.service';
 import { CustomerService } from '../services/customer.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { CustomerAddress } from '../models/customer-address';
+import { NotificationService } from '../services/notification.service';
 
 declare var $: any;
 
@@ -32,7 +33,7 @@ export class CustomerComponent implements OnInit {
     static: true
   }) attachedImageInput: ElementRef
 
-  constructor(private countryService: CountryService, private customerService: CustomerService, private fb: FormBuilder, private domSanitizer: DomSanitizer) { }
+  constructor(private countryService: CountryService, private customerService: CustomerService, private fb: FormBuilder, private domSanitizer: DomSanitizer, private notify: NotificationService) { }
 
   ngOnInit(): void {
     this.buildForm();
@@ -117,7 +118,8 @@ export class CustomerComponent implements OnInit {
   }
   removeCustomerAddresses(i: number) {
     this.getCustomerAddresses().removeAt(i);
-    if (i==0) {
+    if (i == 0) {
+      this.notify.showWarning('You Have To Provide At Least 1 Address', 'Warnings');
       this.addCustomerAddresses();
     }
   }
@@ -154,13 +156,18 @@ export class CustomerComponent implements OnInit {
       });
       this.customerService.saveCustomer(fd).subscribe(
         (data) => {
+          this.notify.showSuccess('Information Saved Succesfully', 'Information');
           console.log(data);
           this.resetForm();
         },
         (err) => {
+          this.notify.showError('Error Occered!', 'Oops');
           console.log(err);
         }
       )
+    }
+    else {
+      this.notify.showWarning('Please Provide All Required Data.', 'Warning');
     }
     
   }
@@ -181,6 +188,7 @@ export class CustomerComponent implements OnInit {
     this.applicationState = 'view';
     this.customerService.getAllCustomerById(id).subscribe(
       (data) => {
+        this.notify.showInfo('Information Loaded Succesfully', 'Information');
         console.log(data);
         this.mainForm.patchValue({
           ID: data.ID,
@@ -204,6 +212,7 @@ export class CustomerComponent implements OnInit {
         this.mainForm.disable();
       },
       (err) => {
+        this.notify.showError('Error Occered!', 'Oops');
         console.log(err);
       }
     )
@@ -221,10 +230,12 @@ export class CustomerComponent implements OnInit {
         fd.append("ID", this.customerData.ID.toString());
         this.customerService.deleteCustomer(fd).subscribe(
           (data) => {
+            this.notify.showSuccess('Information Ddeleted Succesfully', 'Information');
             console.log(data);
             this.resetForm();
           },
           (err) => {
+            this.notify.showError('Error Occered!', 'Oops');
             console.log(err);
           });
       }
