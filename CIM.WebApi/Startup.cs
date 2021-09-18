@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace CIM.WebApi
@@ -31,7 +32,9 @@ namespace CIM.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options => {
+                options.JsonSerializerOptions.PropertyNamingPolicy = null;
+            });
             services.AddDbContext<AppDbContext>(o =>
             {
                 o.UseSqlServer(Configuration.GetConnectionString("sqlDbCon"),
@@ -39,6 +42,19 @@ namespace CIM.WebApi
             });
             services.AddScoped(typeof(IGenericRepo<>),typeof(GenericRepo<>));
             services.AddScoped<ICustomerRepo,CustomerRepo>();
+            services.AddScoped<ICountryRepo,CountryRepo>();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                builder =>
+                {
+                    builder.AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+
+                });
+
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,7 +64,7 @@ namespace CIM.WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseCors("CorsPolicy");
             app.UseRouting();
             app.UseStaticFiles();
             app.UseAuthorization();
