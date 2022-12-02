@@ -1,4 +1,3 @@
-import { Byte } from '@angular/compiler/src/util';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Country } from '../models/country';
@@ -40,7 +39,7 @@ export class CustomerComponent implements OnInit {
     this.LoadCustomerList()
     this.LoadCountryDDL();
   }
-  LoadCountryDDL() {
+  LoadCountryDDL(): void {
     this.countryService.getAllCountry().subscribe(
       (data) => {
         this.countries = data;
@@ -50,7 +49,7 @@ export class CustomerComponent implements OnInit {
       });
   }
 
-  LoadCustomerList() {
+  LoadCustomerList(): void {
     this.customerService.getAllCustomers().subscribe(
       (data) => {
         this.customers = data;

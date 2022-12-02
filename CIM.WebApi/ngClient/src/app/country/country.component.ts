@@ -20,14 +20,14 @@ export class CountryComponent implements OnInit {
     this.buildForm();
     this.LoadCountries();
   }
-  buildForm() {
+  buildForm(): void {
     this.CountryForm = this.fb.group({
       ID: new FormControl(''),
       CountryName: new FormControl('', [Validators.required, Validators.maxLength(50)])
     });
   }
 
-  LoadCountries() {
+  LoadCountries(): void {
     this.countryService.getAllCountry().subscribe(
       (data) => {
         this.countries = data;
@@ -37,7 +37,7 @@ export class CountryComponent implements OnInit {
       });
   }
 
-  onSave() {
+  onSave(): void {
     this.formSubmited = true;
     if (this.CountryForm.valid) {
       this.countryData = this.CountryForm.getRawValue();
@@ -46,7 +46,7 @@ export class CountryComponent implements OnInit {
       this.countryService.saveCountry(this.countryData).subscribe(
         (data) => {
           this.notify.showSuccess('Information Saved Succesfully', 'Information');
-          console.log(data);
+          //console.log(data);
           this.resetForm();
         },
         (err) => {
@@ -58,7 +58,7 @@ export class CountryComponent implements OnInit {
 
   }
 
-  resetForm() {
+  resetForm(): void {
     this.formSubmited = false;
     this.LoadCountries();
     this.buildForm();

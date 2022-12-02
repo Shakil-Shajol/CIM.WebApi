@@ -1,4 +1,3 @@
-import { Customer } from "./customer";
 
 export class Country {
   constructor() { }

@@ -22,10 +22,7 @@ namespace CIM.Models
         public int MaritalStatus { get; set; }
         [Column(TypeName = "VARBINARY(MAX)")]
         public byte[] CustomerPhoto { get; set; }
-
-
         public Country Country { get; set; }
-
         public List<CustomerAddress> CustomerAddresses { get; set; }
     }
 }

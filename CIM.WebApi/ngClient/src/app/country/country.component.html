@@ -1,27 +1,29 @@
 
 <div class="row">
-  <fieldset class="form-group border p-3">
-    <legend class="w-auto">Add Country</legend>
-    <div class="row">
-      <div class="col-10">
-        <form [formGroup]="CountryForm">
-          <div class="form-group mb-1">
-            <div class="row">
-              <label class="control-label col-2">Country Name</label>
-              <div class="col-10">
-                <input formControlName="CountryName" class="form-control form-control-sm" />
-                <span class="text-danger" *ngIf="CountryForm.get('CountryName').errors?.maxlength">Only 50 Charecters Are Allowed.</span>
-                <span class="text-danger" *ngIf="CountryForm.get('CountryName').errors?.required && formSubmited">Please Provide Country Name.</span>
+  <div class="col-12">
+    <fieldset class="form-group border p-2">
+      <legend class="w-auto">Add Country</legend>
+      <div class="row">
+        <div class="col-10">
+          <form [formGroup]="CountryForm">
+            <div class="form-group mb-1">
+              <div class="row">
+                <label class="control-label col-2">Country Name</label>
+                <div class="col-10">
+                  <input formControlName="CountryName" class="form-control form-control-sm" />
+                  <span class="text-danger" *ngIf="CountryForm.get('CountryName').errors?.maxlength">Only 50 Charecters Are Allowed.</span>
+                  <span class="text-danger" *ngIf="CountryForm.get('CountryName').errors?.required && formSubmited">Please Provide Country Name.</span>
+                </div>
               </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
+        <div class="col-2 text-right">
+          <button class="btn btn-success btn-flat btn-sm" (click)="onSave()">Save</button>
+        </div>
       </div>
-      <div class="col-2 text-right">
-        <button class="btn btn-success btn-flat" (click)="onSave()">Save</button>
-      </div>
-    </div>
-  </fieldset>
+    </fieldset>
+  </div>
 </div>
 <div class="row">
   <div class="col-12">

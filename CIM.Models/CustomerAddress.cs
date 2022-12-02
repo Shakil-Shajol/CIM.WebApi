@@ -13,7 +13,6 @@ namespace CIM.Models
         public int CustomerID { get; set; }
         [Column(name:"CustomerAddress",TypeName = "NVARCHAR(500)")]
         public string Address { get; set; }
-
         public Customer Customer { get; set; }
     }
 }
